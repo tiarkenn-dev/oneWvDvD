@@ -1,6 +1,6 @@
 -- =========================================================
 -- ONE W
--- PART 1/8 : SECTION 1 - CONFIG + LOADING + STATE
+-- SECTION 1/15 : CONFIG + LOADING + STATE
 -- =========================================================
 
 Players = game:GetService("Players")
@@ -363,7 +363,7 @@ task.spawn(function()
 end)
 
 print("✅ [1/15] Loading + Config + State Loaded (32 lagu)")-- =========================================================
--- SECTION 2 : FIRE + SKY + KILLERANIMS + SKIPANIMS + GRAFIK
+-- SECTION 2/15 : FIRE + SKY + KILLERANIMS + SKIPANIMS + GRAFIK
 -- =========================================================
 
 FireList = {
@@ -538,7 +538,7 @@ SharpBackup = {
 }
 
 print("✅ [2/15] Fire + Sky + KillerAnims + SkipAnims + Grafik Presets Loaded")-- =========================================================
--- SECTION 3 : BOMBAX MUSIC PLAYER
+-- SECTION 3/15 : BOMBAX MUSIC PLAYER
 -- =========================================================
 
 local GN = {
@@ -888,7 +888,7 @@ end)
 updateTeks()
 
 print("✅ [3/15] BOMBAX Music Player Loaded - " .. #Bombax.DaftarLagu .. " lagu")-- =========================================================
--- SECTION 4 : FUNGSI UTAMA + HD SKY + FPS/PING + GRAFIK
+-- SECTION 4/15 : FUNGSI UTAMA + HD SKY + FPS/PING + GRAFIK
 -- PATCH: applyCrosshair 10 style + applyFullbright max 500 + Kill Fog
 -- =========================================================
 
@@ -1716,8 +1716,7 @@ RunService.RenderStepped:Connect(function()
     fpsCounter = fpsCounter + 1
     if tick() - fpsLastTime >= 1 then
         currentFPS = fpsCounter
-        fpsCounter = 0
-        fpsLastTime = tick()
+        fpsCounter = 0        fpsLastTime = tick()
         pcall(function()
             currentPing = math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
         end)
@@ -1945,7 +1944,7 @@ function applyCleanSky()
 end
 
 print("✅ [4/15] Fungsi Utama + HD Sky + FPS/Ping + Grafik + Crosshair 10 Style + Kill Fog Loaded")-- =========================================================
--- SECTION 5 : ESP + AUTO PARRY (23 ID) + PARRY CIRCLE
+-- SECTION 5/15 : ESP + AUTO PARRY (23 ID) + PARRY CIRCLE
 -- =========================================================
 
 ESPObjects = {}
@@ -2552,6 +2551,7 @@ end)
 
 print("✅ [5/15] ESP + Auto Parry (23 ID) + Parry Circle Loaded")-- =========================================================
 -- SECTION 6 : AIMBOT SENTER + AIMBOT KILLER + FAST VAULT
+-- Instant Lock ke Head
 -- =========================================================
 
 AimbotLaserGui = nil
@@ -2631,7 +2631,9 @@ task.spawn(function()
     end
 end)
 
--- INSTANT LOCK KE HEAD
+-- =========================================================
+-- GET CLOSEST KILLER TARGET - LOCK INSTANT KE HEAD
+-- =========================================================
 function GetClosestKillerTarget()
     local cam = workspace.CurrentCamera
     if not cam then return nil end
@@ -2641,6 +2643,7 @@ function GetClosestKillerTarget()
     
     for _, p in pairs(Players:GetPlayers()) do
         if p ~= LP and p.Character and AimbotSenter_IsKiller(p) then
+            -- ⚠️ SELALU LOCK KE HEAD
             local head = p.Character:FindFirstChild("Head")
             local hum = p.Character:FindFirstChildOfClass("Humanoid")
             
@@ -2650,7 +2653,7 @@ function GetClosestKillerTarget()
                     local dist = (Vector2.new(pos.X, pos.Y) - center).Magnitude
                     if dist < shortest then
                         shortest = dist
-                        closest = head
+                        closest = head  -- ⬅️ LANGSUNG HEAD
                     end
                 end
             end
@@ -2659,6 +2662,9 @@ function GetClosestKillerTarget()
     return closest
 end
 
+-- =========================================================
+-- AIMBOT SENTER LOOP - INSTANT LOCK SETIAP FRAME
+-- =========================================================
 task.spawn(function()
     while task.wait() do
         if not AimbotSenter.Enabled then
@@ -2695,11 +2701,13 @@ task.spawn(function()
         end
         AimbotSenter.CurrentTarget = target
         
+        -- ⚠️ INSTANT LOCK - LANGSUNG SET CFrame
         local cam = workspace.CurrentCamera
         if cam then
             cam.CFrame = CFrame.new(cam.CFrame.Position, target.Position)
         end
         
+        -- LASER
         if AimbotSenter.ShowLaser then
             local cam2 = workspace.CurrentCamera
             local screenPoint, onScreen = cam2:WorldToViewportPoint(target.Position)
@@ -2725,7 +2733,9 @@ task.spawn(function()
     end
 end)
 
--- ============ AIMBOT KILLER (AIMLOCK) ============
+-- =========================================================
+-- AIMBOT KILLER (AIMLOCK)
+-- =========================================================
 Aimlock_AttackButtons = Aimlock_AttackButtons or {}
 
 local function isAttackButton(obj)
@@ -2836,7 +2846,9 @@ function Aimlock_StopLoop()
     Aimlock.CurrentTarget = nil
 end
 
--- ============ FAST VAULT ============
+-- =========================================================
+-- FAST VAULT
+-- =========================================================
 FastVaultTracks = {}
 
 local function normalizeId(id)
@@ -2888,8 +2900,8 @@ if LP.Character and FastVault.Enabled then
     pcall(function() hookVault(LP.Character) end)
 end
 
-print("✅ [6/15] Aimbot Senter (Instant Head Lock) + Aimbot Killer + Fast Vault Loaded")-- =========================================================
--- SECTION 7/15 : GUI UTAMA + TOMBOL W + PANEL + TAB BAR
+print("✅ [6/15] Aimbot Senter (Instant Head Lock) + Aimbot Killer + Fast Vault OK")-- =========================================================
+-- SECTION 7 : GUI UTAMA + TOMBOL W + PANEL + TAB BAR
 -- =========================================================
 
 gui = Instance.new("ScreenGui")
@@ -3289,6 +3301,9 @@ function closePanel()
     panel.Visible = false
 end
 
+_G.Roooor_openPanel = openPanel
+_G.Roooor_closePanel = closePanel
+
 btnContainer.MouseButton1Click:Connect(function()
     if btnWasDragged then
         btnWasDragged = false
@@ -3316,10 +3331,8 @@ UIS.InputBegan:Connect(function(input, gpe)
     end
 end)
 
-print("✅ [7/15] GUI + Tombol W + Panel + Tab Bar Loaded")
-
--- =========================================================
--- SECTION 8/15 : KOMPONEN UI
+print("[7/15] GUI + Tombol W + Panel + Tab Bar OK")-- =========================================================
+-- SECTION 8 : KOMPONEN UI
 -- =========================================================
 
 function sec(title, icon, parent)
@@ -3839,10 +3852,9 @@ _G.Roooor_drp = drp
 _G.Roooor_tpBtn = tpBtn
 _G.Roooor_makeTab = makeTab
 
-print("✅ [8/15] Komponen UI Loaded")
-
--- =========================================================
--- SECTION 9/15 : TAB SURVIVOR + KILLER + HITBOX + TELEPORT
+print("[8/15] Komponen UI OK")-- =========================================================
+-- SECTION 9 : TAB SURVIVOR + KILLER + HITBOX + TELEPORT
+-- + AUTO PARRY v1 + AUTO PARRY INSTANT (NO DELAY)
 -- =========================================================
 
 _G.HitboxEsp = _G.HitboxEsp or {
@@ -3859,6 +3871,22 @@ _G.SpoofAttack = _G.SpoofAttack or {
     AttackSpam = false, AttackDelay = 0.15,
 }
 
+-- =========================================================
+-- AUTO PARRY INSTANT CONFIG
+-- =========================================================
+_G.APInstant = _G.APInstant or {
+    Enabled = false,
+    Range = 12,
+    ShowRange = true,
+    RangeThickness = 0.4,
+    RangeYOffset = -2.5,
+}
+
+local AP = _G.APInstant
+
+-- =========================================================
+-- HITBOX ESP
+-- =========================================================
 local HitboxEspObjects = {}
 
 local function CreateHitboxEsp(char, color)
@@ -3967,6 +3995,9 @@ task.spawn(function()
     end
 end)
 
+-- =========================================================
+-- SPOOF ATTACK
+-- =========================================================
 local SpoofHooked = false
 local OriginalNamecall = nil
 
@@ -4048,28 +4079,228 @@ task.spawn(function()
     end
 end)
 
+-- =========================================================
+-- AUTO PARRY INSTANT - KILLER ANIMS
+-- =========================================================
+local APInstant_Anims = {}
+for _, id in ipairs({
+    "105374834496520","113255068724446","118907603246885","129784271201071",
+    "117042998468241","122812055447896","78935059863801","74968262036854",
+    "78432063483146","132817836308238","133963973694098","111920872708571",
+    "80411309607666","98163597193511","82666958311998","110355011987939",
+    "139369275981139","135002183282873","121216847022485","130593238885843",
+    "117070354890871","106871536134254","138720291317243",
+    "130819705183003","74796685455129","180435571",
+    "110360975271091","111229698330816","92125118598365",
+    "85030641905220","102055678391920","135181748009911",
+    "88454826739191","135598697094633","115244153053858",
+    "92362656727126","135403091566760","79935565590141",
+    "111223305405046","102746205979822",
+}) do
+    APInstant_Anims["rbxassetid://"..id] = true
+end
+
+local APInstant_Skip = {
+    ["112166042383605"] = true,
+    ["123047897844134"] = true,
+    ["126965695851149"] = true,
+    ["135084204086504"] = true,
+    ["127096285501517"] = true,
+}
+
+local APInstant_Count = 0
+local APInstant_Hooked = {}
+
+local function APInstant_FindBtn()
+    local current = PG
+    for segment in string.gmatch("Survivor-mob.Controls.Gui-mob", "[^%.]+") do
+        current = current and current:FindFirstChild(segment)
+    end
+    if current and current:IsA("GuiObject") and current.Visible then
+        return current
+    end
+    return nil
+end
+
+local function APInstant_Press()
+    if UIS.TouchEnabled then
+        local btn = APInstant_FindBtn()
+        if btn then
+            local pos = btn.AbsolutePosition
+            local size = btn.AbsoluteSize
+            local inset = GuiService:GetGuiInset()
+            local x = pos.X + size.X / 2 + inset.X
+            local y = pos.Y + size.Y / 2 + inset.Y
+            VirtualInputManager:SendTouchEvent(8824, 0, x, y)
+            VirtualInputManager:SendTouchEvent(8824, 2, x, y)
+            return true
+        end
+        return false
+    else
+        VirtualInputManager:SendMouseButtonEvent(0, 0, 1, true, game, 0)
+        VirtualInputManager:SendMouseButtonEvent(0, 0, 1, false, game, 0)
+        return true
+    end
+end
+
+local function APInstant_Hook(char)
+    if APInstant_Hooked[char] then return end
+    APInstant_Hooked[char] = true
+
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    if not hum then return end
+    local animator = hum:FindFirstChildOfClass("Animator")
+    if not animator then return end
+
+    animator.AnimationPlayed:Connect(function(track)
+        if not AP.Enabled then return end
+
+        local anim = track.Animation
+        if not anim or not anim.AnimationId then return end
+        local id = anim.AnimationId:match("%d+")
+        if not id then return end
+        local fullId = "rbxassetid://" .. id
+
+        if APInstant_Skip[id] then return end
+        if not APInstant_Anims[fullId] then return end
+        
+        -- CEK JARAK
+        local myRoot = getRoot()
+        if not myRoot then return end
+        local enemyRoot = char:FindFirstChild("HumanoidRootPart")
+        if not enemyRoot then return end
+        
+        local distance = (enemyRoot.Position - myRoot.Position).Magnitude
+        if distance > AP.Range then return end
+        
+        -- INSTANT PARRY - LANGSUNG TANPA DELAY
+        APInstant_Count = APInstant_Count + 1
+        APInstant_Press()
+        print("[AP Instant #" .. APInstant_Count .. "] " .. (anim.Name or "Unknown"))
+    end)
+end
+
 task.spawn(function()
-    while task.wait(0.05) do
-        local spoof = _G.SpoofAttack
-        if not spoof.Enabled or not spoof.AttackSpam then continue end
-        local target = GetClosestSurvivorForSpoof()
-        if target then
-            pcall(function()
-                local r = ReplicatedStorage:FindFirstChild("Remotes")
-                if r then
-                    local a = r:FindFirstChild("Attacks")
-                    if a then
-                        local atk = a:FindFirstChild("BasicAttack")
-                        if atk then atk:FireServer(false) end
+    while task.wait(0.5) do
+        if AP.Enabled then
+            for _, p in pairs(Players:GetPlayers()) do
+                if p ~= LP and p.Character and p.Team and p.Team.Name == "Killer" then
+                    local hum = p.Character:FindFirstChildOfClass("Humanoid")
+                    if hum and hum.Health > 0 then
+                        APInstant_Hook(p.Character)
                     end
                 end
-            end)
+            end
         end
-        task.wait(spoof.AttackDelay or 0.15)
     end
 end)
 
+Players.PlayerAdded:Connect(function(p)
+    p.CharacterAdded:Connect(function(c)
+        task.wait(1)
+        if AP.Enabled and p.Team and p.Team.Name == "Killer" then
+            APInstant_Hook(c)
+        end
+    end)
+end)
+
+-- =========================================================
+-- AP INSTANT RANGE VISUAL
+-- =========================================================
+local APInstant_Circle = nil
+local APInstant_Atts = {}
+local APInstant_Beams = {}
+
+local function APInstant_ClearCircle()
+    if APInstant_Circle then APInstant_Circle:Destroy(); APInstant_Circle = nil end
+    APInstant_Atts = {}
+    APInstant_Beams = {}
+end
+
+local function APInstant_CreateCircle()
+    APInstant_ClearCircle()
+    APInstant_Circle = Instance.new("Part")
+    APInstant_Circle.Name = "APInstantRange"
+    APInstant_Circle.Anchored = true
+    APInstant_Circle.CanCollide = false
+    APInstant_Circle.CanQuery = false
+    APInstant_Circle.CanTouch = false
+    APInstant_Circle.Transparency = 1
+    APInstant_Circle.Size = Vector3.new(1, 0.1, 1)
+    APInstant_Circle.Parent = workspace
+
+    for i = 1, 36 do
+        local angle = (i / 36) * math.pi * 2
+        local att = Instance.new("Attachment")
+        att.Position = Vector3.new(math.cos(angle), 0, math.sin(angle))
+        att.Parent = APInstant_Circle
+        table.insert(APInstant_Atts, att)
+    end
+    for i = 1, 36 do
+        local attA = APInstant_Atts[i]
+        local attB = APInstant_Atts[(i % 36) + 1]
+        local beam = Instance.new("Beam")
+        beam.Attachment0 = attA
+        beam.Attachment1 = attB
+        beam.Width0 = AP.RangeThickness
+        beam.Width1 = AP.RangeThickness
+        beam.FaceCamera = true
+        beam.LightEmission = 1
+        beam.LightInfluence = 0
+        beam.Segments = 1
+        beam.Transparency = NumberSequence.new(0)
+        beam.Color = ColorSequence.new(Color3.fromRGB(255, 210, 80))
+        beam.Parent = APInstant_Circle
+        table.insert(APInstant_Beams, beam)
+    end
+end
+
+RunService.RenderStepped:Connect(function()
+    if not AP.Enabled or not AP.ShowRange then
+        if APInstant_Circle then APInstant_ClearCircle() end
+        return
+    end
+    
+    local root = getRoot()
+    if not root then
+        if APInstant_Circle then APInstant_ClearCircle() end
+        return
+    end
+    
+    if not APInstant_Circle or not APInstant_Circle.Parent then
+        APInstant_CreateCircle()
+    end
+    
+    local radius = AP.Range
+    local myPos = root.Position
+    local killerInside = false
+    
+    for _, p in pairs(Players:GetPlayers()) do
+        if p ~= LP and p.Character and p.Team and p.Team.Name == "Killer" then
+            local eRoot = p.Character:FindFirstChild("HumanoidRootPart")
+            if eRoot and (eRoot.Position - myPos).Magnitude <= radius then
+                killerInside = true
+                break
+            end
+        end
+    end
+    
+    local color = killerInside and Color3.fromRGB(255, 50, 50) or Color3.fromRGB(255, 210, 80)
+    APInstant_Circle.Position = Vector3.new(myPos.X, myPos.Y + AP.RangeYOffset, myPos.Z)
+    for i, att in ipairs(APInstant_Atts) do
+        local angle = (i / 36) * math.pi * 2
+        att.Position = Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+    end
+    for _, beam in ipairs(APInstant_Beams) do
+        beam.Color = ColorSequence.new(color)
+    end
+end)
+
+-- =========================================================
+-- TAB 1: SURVIVOR
+-- =========================================================
 makeTab("Survivor", "🏃", 1, function()
+    -- ===== AUTO PARRY v1 =====
     sec("Auto Parry", "🛡️")
     tog("Enable Auto Parry", false, function(s)
         AutoParry.Enabled = s
@@ -4101,6 +4332,33 @@ makeTab("Survivor", "🏃", 1, function()
         AP_parryCount = 0
     end)
 
+    -- ===== AUTO PARRY INSTANT =====
+    sec("⚡ Instant Parry", "⚡")
+    tog("Enable Instant Parry", false, function(s)
+        AP.Enabled = s
+        if s then
+            for _, p in pairs(Players:GetPlayers()) do
+                if p ~= LP and p.Character and p.Team and p.Team.Name == "Killer" then
+                    task.spawn(function() APInstant_Hook(p.Character) end)
+                end
+            end
+        end
+    end)
+    tog("Show Instant Range", true, function(s)
+        AP.ShowRange = s
+        if not s and APInstant_Circle then APInstant_ClearCircle() end
+    end)
+    sl("Instant Range", 5, 40, 12, function(v)
+        AP.Range = v
+    end)
+    sl("Instant Thickness (x100)", 1, 50, 40, function(v)
+        AP.RangeThickness = v / 100
+    end)
+    sl("Instant Y Offset", -10, 5, -2, function(v)
+        AP.RangeYOffset = v
+    end)
+
+    -- ===== ESP Circle Parry =====
     sec("ESP Circle Parry", "⭕")
     tog("Show Circle", false, function(s)
         if AP_ESPCircle then
@@ -4136,6 +4394,7 @@ makeTab("Survivor", "🏃", 1, function()
         if AP_ESPCircle then AP_ESPCircle.ColorDanger = c end
     end)
 
+    -- ===== Auto Skill Check =====
     sec("Auto Skill Check", "⚡")
     tog("Enable Auto Skill Check", false, function(s)
         SkillCheck.Enabled = s
@@ -4182,18 +4441,13 @@ makeTab("Survivor", "🏃", 1, function()
         FastVault.Speed = v
     end)
 
-    sec("Auto Escape", "🚪")
-    tog("Enable Auto Escape", false, function(s) S.AutoEscapeGate = s end)
-    tog("Killer Deket", true, function(s) S.AutoEscapeUseKillerCheck = s end)
-    tog("Generator Cukup", true, function(s) S.AutoEscapeUseGenCheck = s end)
-    sl("Killer Range", 10, 150, 50, function(v) S.AutoEscapeRange = v end)
-
     sec("Support", "💊")
     tog("Instant Interact", false, function(s) S.InstantInteract = s end)
 
     sec("Teleport", "🌀")
     btn("TP Finish Line", function() teleportToFinishLine() end)
 end, function()
+    -- TELEPORT MENU (KOLOM KANAN)
     sec("Teleport Menu", "🌀", rightScroll)
 
     local TP = _G.Teleport or { OffsetY = 5, FrontDistance = 4, Mode = "Random", Notify = true }
@@ -4406,6 +4660,9 @@ end, function()
     end, rightScroll)
 end)
 
+-- =========================================================
+-- TAB 2: KILLER
+-- =========================================================
 makeTab("Killer", "🔪", 2, function()
     sec("Auto Attack", "⚔️")
     tog("Killer Auto Attack", false, function(s) S.Killer_AutoAtk = s end)
@@ -4455,10 +4712,13 @@ end, function()
     end, rightScroll)
 end)
 
--- =========================================================
--- SECTION 10/15 : TAB ESP + FIRE + MUSIK
+print("✅ [9/15] Survivor + Killer + Hitbox + Teleport + Auto Parry v1 + Instant OK")-- =========================================================
+-- SECTION 10 : TAB ESP + FIRE + MUSIK
 -- =========================================================
 
+-- =========================================================
+-- TAB 3: ESP
+-- =========================================================
 makeTab("ESP", "👁️", 3, function()
     sec("Player ESP", "🟢")
     tog("ESP Survivor", true, function(s) ESP.Survivor = s end)
@@ -4509,6 +4769,9 @@ end, function()
     end, rightScroll)
 end)
 
+-- =========================================================
+-- TAB 4: FIRE
+-- =========================================================
 makeTab("Fire", "🔥", 4, function()
     sec("Fire Control", "⚙️")
     tog("Enable Fire", false, function(s)
@@ -4570,6 +4833,9 @@ end, function()
     end
 end)
 
+-- =========================================================
+-- TAB 5: MUSIK
+-- =========================================================
 makeTab("Musik", "🎵", 5, function()
     sec("Music Player", "🎵")
 
@@ -4652,10 +4918,13 @@ end, function()
     end
 end)
 
--- =========================================================
--- SECTION 11/15 : TAB MISC + VISUAL + GRAFIK ULTRA
+print("[10/15] Tab ESP + Fire + Musik OK")-- =========================================================
+-- SECTION 11 : TAB MISC + VISUAL + GRAFIK ULTRA
 -- =========================================================
 
+-- =========================================================
+-- TAB 6: MISC
+-- =========================================================
 makeTab("Misc", "⚙️", 6, function()
     sec("Movement", "🏃")
     tog("Walk Speed", false, function(s) S.WalkSpeed = s end)
@@ -4666,9 +4935,15 @@ makeTab("Misc", "⚙️", 6, function()
     tog("No Clip Camera", false, function(s) S.NoClipCamera = s end)
 
     sec("FOV", "🎥")
-    btn("FOV 70", function() S.FOV = 70; S.FOVEnabled = true; applyFOV() end)
-    btn("FOV 90", function() S.FOV = 90; S.FOVEnabled = true; applyFOV() end)
-    btn("FOV 120", function() S.FOV = 120; S.FOVEnabled = true; applyFOV() end)
+    btn("FOV 70", function()
+        S.FOV = 70; S.FOVEnabled = true; applyFOV()
+    end)
+    btn("FOV 90", function()
+        S.FOV = 90; S.FOVEnabled = true; applyFOV()
+    end)
+    btn("FOV 120", function()
+        S.FOV = 120; S.FOVEnabled = true; applyFOV()
+    end)
 
     sec("Utility", "🛠️")
     tog("Anti-AFK", false, function(s)
@@ -4688,6 +4963,9 @@ end, function()
     btn("Rejoin Server", function() rejoinServer() end, rightScroll)
 end)
 
+-- =========================================================
+-- TAB 7: VISUAL
+-- =========================================================
 makeTab("Visual", "✨", 7, function()
     sec("Fullbright & No Fog", "💡")
     tog("Fullbright", false, function(s)
@@ -4869,6 +5147,9 @@ end, function()
     end, rightScroll)
 end)
 
+-- =========================================================
+-- TAB 8: GRAFIK ULTRA
+-- =========================================================
 makeTab("Grafik Ultra", "🎬", 8, function()
     sec("Soft Cinematic", "🎬")
     tog("Soft Cinematic", false, function(s)
@@ -4878,9 +5159,15 @@ makeTab("Grafik Ultra", "🎬", 8, function()
             GraphicDisableSoftCinematic()
         end
     end)
-    tog("Full Bright", false, function(s) GraphicState.FullBright = s end)
-    tog("No Fog", false, function(s) GraphicState.NoFog = s end)
-    tog("Clean Sky", false, function(s) GraphicState.CleanSky = s end)
+    tog("Full Bright", false, function(s)
+        GraphicState.FullBright = s
+    end)
+    tog("No Fog", false, function(s)
+        GraphicState.NoFog = s
+    end)
+    tog("Clean Sky", false, function(s)
+        GraphicState.CleanSky = s
+    end)
 end, function()
     sec("SharpGraph Preset", "⚡", rightScroll)
     btn("ANTI LAG 10", function() SharpApplyAntiLag10() end, rightScroll)
@@ -4940,6 +5227,13 @@ end, function()
     end, rightScroll)
 end)
 
+print("[11/15] Tab Misc + Visual + Grafik Ultra OK")-- =========================================================
+-- SECTION 12 : TAB AIMBOT + TAB MOONWALK
+-- =========================================================
+
+-- =========================================================
+-- TAB 9: AIMBOT
+-- =========================================================
 makeTab("Aimbot", "🎯", 9, function()
     sec("Aimbot Killer", "🗡️")
     tog("Enable Aimbot Killer", false, function(s)
@@ -4952,7 +5246,9 @@ makeTab("Aimbot", "🎯", 9, function()
             Aimlock_StopLoop()
         end
     end)
-    sl("Killer Radius", 5, 100, 80, function(v) Aimlock.Radius = v end)
+    sl("Killer Radius", 5, 100, 80, function(v)
+        Aimlock.Radius = v
+    end)
     drp("Killer Aim Part", {"HumanoidRootPart", "Head", "UpperTorso"}, "HumanoidRootPart", function(v)
         Aimlock.AimPart = v
     end)
@@ -4965,14 +5261,21 @@ makeTab("Aimbot", "🎯", 9, function()
             AimbotSenter.CurrentTarget = nil
         end
     end)
-    tog("Show ESP Laser", true, function(s) AimbotSenter.ShowLaser = s end)
-    cpk("Laser Color", DIAMOND_BLUE, function(c) AimbotSenter.LaserColor = c end)
+    drp("Senter Lock Part", {"Head", "HumanoidRootPart", "UpperTorso"}, "Head", function(v)
+        AimbotSenter.LockPart = v
+    end)
+    tog("Show ESP Laser", true, function(s)
+        AimbotSenter.ShowLaser = s
+    end)
+    cpk("Laser Color", DIAMOND_BLUE, function(c)
+        AimbotSenter.LaserColor = c
+    end)
 end, function()
     sec("Info", "ℹ️", rightScroll)
     local infoLbl = Instance.new("TextLabel")
     infoLbl.Size = UDim2.new(1, -4, 0, 80)
     infoLbl.BackgroundTransparency = 1
-    infoLbl.Text = "Aimbot Killer: HOLD attack = lock ke Survivor\n\nAimbot Senter: HOLD senter = lock ke Killer (Instant Head)\n\nLepas tombol = kamera bebas"
+    infoLbl.Text = "Aimbot Killer: HOLD attack = lock ke Survivor\n\nAimbot Senter: HOLD senter = lock ke Killer\n\nLepas tombol = kamera bebas"
     infoLbl.TextColor3 = C.DIM
     infoLbl.TextSize = 9
     infoLbl.Font = Enum.Font.Gotham
@@ -4982,6 +5285,9 @@ end, function()
     infoLbl.Parent = rightScroll
 end)
 
+-- =========================================================
+-- TAB 10: MOONWALK
+-- =========================================================
 makeTab("Moonwalk", "🕺", 10, function()
     sec("Moonwalk", "🕺")
     tog("Enable Moonwalk", false, function(s)
@@ -5012,10 +5318,11 @@ end, function()
     tog("Use Slow Speed", true, function(s) Moonwalk.UseSlow = s end, rightScroll)
 end)
 
-print("✅ [9-12/15] Semua Tab Loaded")-- =========================================================
--- SECTION 13/15 : LOOP FITUR AKTIF + STUN INDICATOR + CAMERA FIX
+print("[12/15] Tab Aimbot + Tab Moonwalk OK")-- =========================================================
+-- SECTION 13 : LOOP FITUR + STUN INDICATOR + CAMERA FIX
 -- =========================================================
 
+-- ============ MOONWALK BUTTON ============
 function mwIsDowned()
     local char = LP.Character
     if not char then return false end
@@ -5429,7 +5736,7 @@ task.spawn(function()
     end
 end)
 
--- ============ STUN INDICATOR + SOUND ============
+-- ============ STUN INDICATOR ============
 local function CreateStunBillboard(char)
     local head = char:FindFirstChild("Head")
     if not head then return nil end
@@ -5793,10 +6100,8 @@ task.spawn(function()
     end
 end)
 
-print("✅ [13/15] Loop Fitur + Stun Indicator + Camera Fix + Kill Fog Auto Loaded")
-
--- =========================================================
--- SECTION 14/15 : ANTI-ILANG + RECOVERY + AUTO REAPPLY
+print("[13/15] Loop Fitur + Stun Indicator + Camera Fix + Kill Fog Auto OK")-- =========================================================
+-- SECTION 14 : ANTI-ILANG EXTENDED + RECOVERY + AUTO REAPPLY
 -- =========================================================
 
 task.delay(3, function()
@@ -5935,6 +6240,17 @@ task.spawn(function()
     end
 end)
 
+task.spawn(function()
+    while task.wait(5) do
+        if GraphicState.SoftCinematic then
+            local hasEffects = Lighting:FindFirstChild("OneWGraphic_Bloom")
+            if not hasEffects then
+                pcall(GraphicApplySoftCinematic)
+            end
+        end
+    end
+end)
+
 workspace.DescendantAdded:Connect(function(obj)
     task.defer(function()
         if GraphicState.SoftCinematic and obj:IsA("BasePart") then
@@ -5944,6 +6260,13 @@ workspace.DescendantAdded:Connect(function(obj)
             obj.CastShadow = true
         end
     end)
+end)
+
+LP.CharacterAdded:Connect(function(char)
+    task.wait(1.5)
+    if GraphicState.SoftCinematic then
+        pcall(GraphicApplyCharacterShadow)
+    end
 end)
 
 task.spawn(function()
@@ -5982,10 +6305,62 @@ task.spawn(function()
     end
 end)
 
-print("✅ [14/15] Anti-Ilang + Recovery + Auto Reapply Loaded")
+function safeCall(fn, ...)
+    local args = {...}
+    local ok, err = pcall(function()
+        return fn(table.unpack(args))
+    end)
+    if not ok then
+        warn("[Safe Call] Error:", err)
+    end
+    return ok
+end
 
--- =========================================================
--- SECTION 15/15 : AUTO-ON + BANNER + PRINT FINAL
+_G.Roooor_safeCall = safeCall
+
+function UnloadAll()
+    print("[Hub] Unloading...")
+    pcall(function()
+        if gui then gui:Destroy() end
+        if killFeedGui then killFeedGui:Destroy() end
+        if mwBtnGui then mwBtnGui:Destroy() end
+        if crosshairGui then crosshairGui:Destroy() end
+        if fpsPingGui then fpsPingGui:Destroy() end
+        if AimbotLaserGui then AimbotLaserGui:Destroy() end
+        if _G.Roooor_BombaxGui then _G.Roooor_BombaxGui:Destroy() end
+        if loadingGui then loadingGui:Destroy() end
+
+        clear8Bit()
+        clearKorblox()
+        AP_ClearCircle()
+        SharpReset()
+
+        if Bombax.Music then
+            Bombax.Music:Stop()
+            Bombax.Music:Destroy()
+        end
+
+        if origLighting then
+            Lighting.Brightness = origLighting.Brightness
+            Lighting.Ambient = origLighting.Ambient
+            Lighting.OutdoorAmbient = origLighting.OutdoorAmbient
+            Lighting.FogStart = origLighting.FogStart
+            Lighting.FogEnd = origLighting.FogEnd
+        end
+
+        local cam = workspace.CurrentCamera
+        if cam then
+            cam.CameraType = Enum.CameraType.Custom
+            cam.FieldOfView = 70
+        end
+    end)
+    print("[Hub] Unloaded")
+end
+
+_G.Roooor_Unload = UnloadAll
+
+print("[14/15] Anti-Ilang Extended + Recovery + Auto Reapply OK")-- =========================================================
+-- SECTION 15 : AUTO-ON + PRINT FINAL
 -- =========================================================
 
 task.spawn(function()
@@ -6134,17 +6509,26 @@ print("    V = Moonwalk")
 print("    K = Unlock Camera")
 print("------------------------------------------")
 print("  10 TAB TERSEDIA:")
-print("    1. Survivor  (Auto Parry + Teleport)")
+print("    1. Survivor  (Auto Parry + Teleport Menu)")
 print("    2. Killer    (Hitbox + Spoof)")
 print("    3. ESP")
 print("    4. Fire      (60 efek)")
 print("    5. Musik     (32 lagu)")
 print("    6. Misc")
-print("    7. Visual    (Crosshair 10 Style)")
+print("    7. Visual    (Crosshair 10 Style + Kill Fog)")
 print("    8. Grafik Ultra")
 print("    9. Aimbot")
 print("   10. Moonwalk")
+print("------------------------------------------")
+print("  FITUR UTAMA:")
+print("    - 32 Lagu (24 lama + 8 baru VD)")
+print("    - Crosshair 10 Style")
+print("    - Crosshair bisa geser KIRI/KANAN/ATAS/BAWAH")
+print("    - Kill Fog (kabut VD hilang, sky keliatan)")
+print("    - Brightness max 500")
+print("    - Teleport Menu (9 tombol)")
+print("    - FPS + Ping Auto ON")
 print("==========================================")
 print("")
-print("✅ [15/15] ALL SECTIONS COMPLETE!")
+print("ALL SECTIONS COMPLETE!")
 print("Klik tombol W atau RightShift buat buka menu")
